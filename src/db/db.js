@@ -19,13 +19,13 @@ const db = new sqlite3.Database(dbPath, (err) => {
   }
 });
 
-// Create user table if it doesn't exist
-const createUserTable = () => {
+// Create user table if it doesn't exist, fail fast on error
+export const dbReady = new Promise((resolve, reject) => {
   const query = `
     CREATE TABLE IF NOT EXISTS user (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL,
-      email TEXT NOT NULL,
+      email TEXT NOT NULL UNIQUE,
       phone_number TEXT NOT NULL,
       company_name TEXT NOT NULL
     )
@@ -33,12 +33,13 @@ const createUserTable = () => {
   db.run(query, (err) => {
     if (err) {
       console.error("Error creating user table:", err.message);
+      // Fail fast: exit process if table creation fails
+      reject(err);
     } else {
       console.log("User table ensured.");
+      resolve();
     }
   });
-};
-
-createUserTable();
+});
 
 export default db;

@@ -5,7 +5,7 @@ import express from "express";
 import userRoutes from "./routes/userRoutes.js";
 
 // Initialize SQLite3 database
-import "./db/db.js";
+import { dbReady } from "./db/db.js";
 
 dotenv.config();
 
@@ -24,6 +24,13 @@ app.get("/", (req, res) => {
     .json({ message: "Welcome to the User Management API" });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+dbReady
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`Server is running on http://localhost:${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error("Failed to initialize database:", err);
+    process.exit(1);
+  });
