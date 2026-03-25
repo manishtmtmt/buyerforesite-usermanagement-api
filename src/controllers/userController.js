@@ -5,7 +5,11 @@ import {
   getUserById,
   updateUserById,
 } from "../models/userModel.js";
-import { validateUserInput, validateUserParam, validateUserUpdateInput } from "../utils/validation.js";
+import {
+  validateUserInput,
+  validateUserParam,
+  validateUserUpdateInput,
+} from "../utils/validation.js";
 
 export const createUser = (req, res) => {
   const validation = validateUserInput(req.body);
@@ -18,7 +22,10 @@ export const createUser = (req, res) => {
     if (err) {
       return res.status(500).json({ error: "Failed to create user." });
     }
-    res.status(201).json({ id: userId, ...req.body });
+    const { name, email, phone_number, company_name } = req.body;
+    res
+      .status(201)
+      .json({ id: userId, name, email, phone_number, company_name });
   });
 };
 
