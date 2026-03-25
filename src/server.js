@@ -2,6 +2,11 @@ import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
 
+import userRoutes from "./routes/userRoutes.js";
+
+// Initialize SQLite3 database
+import "./db/db.js";
+
 dotenv.config();
 
 const PORT = process.env.PORT || 8000;
@@ -11,6 +16,7 @@ const app = express();
 app.use(cors());
 
 app.use(express.json());
+app.use("/api/v1/users", userRoutes);
 
 app.get("/", (req, res) => {
   return res
